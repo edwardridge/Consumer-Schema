@@ -1,0 +1,18 @@
+﻿<ProjectConfiguration>
+  <Settings>
+    <IgnoredTests>
+      <NamedTestSelector>
+        <TestName>JsonSchema.Tests.TestSchemaDefinitionz.GenerateSchemaDefinition</TestName>
+      </NamedTestSelector>
+      <NamedTestSelector>
+        <TestName>JsonSchema.Tests.TestSchemaDefinition.GenerateSchemaDefinition</TestName>
+      </NamedTestSelector>
+      <NamedTestSelector>
+        <TestName>JsonSchema.Tests.GenerateSchemaDefinitionsTest.GenerateSchemaDefinition</TestName>
+      </NamedTestSelector>
+      <NamedTestSelector>
+        <TestName>JsonSchema.Tests.TestSchemaDefinition.GenerateExampleJsonFiles</TestName>
+      </NamedTestSelector>
+    </IgnoredTests>
+  </Settings>
+</ProjectConfiguration>
