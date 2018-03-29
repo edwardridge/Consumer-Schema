@@ -68,9 +68,14 @@ namespace ConsumerSchema.Checker
 
         private SchemaResults CheckSchemaDefinitionsMatchExamples(IEnumerable<SchemaDefinition> schemaDefinitions, IEnumerable<SchemaExample> examples)
         {
-            var schemaResults = schemaDefinitions.Select(s => CheckSchemaAgainstExamples(s, examples)).ToList();
+            var result = new SchemaResults();
 
-            return new SchemaResults(schemaResults);
+            foreach (var schemaDefinition in schemaDefinitions)
+            {
+                result.AddResult(CheckSchemaAgainstExamples(schemaDefinition, examples));
+            }
+            
+            return result;
         }
 
         private SchemaResult CheckSchemaAgainstExamples(SchemaDefinition schemaDefinition, IEnumerable<SchemaExample> examples)
@@ -135,9 +140,9 @@ namespace ConsumerSchema.Checker
             this.schemaResults.Add(SchemaResult.CreateFailure(schemaName, errors));
         }
 
-        public List<SchemaResult> GetResults()
+        public void AddResult(SchemaResult result)
         {
-            return schemaResults;
+            this.schemaResults.Add(result);
         }
 
         public string GetErrors()

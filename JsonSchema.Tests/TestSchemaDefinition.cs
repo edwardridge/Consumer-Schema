@@ -1,54 +1,47 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AutoFixture;
+using AutoFixture.Kernel;
 using ConsumerSchema.Checker;
-using ConsumerSchema.Core;
 using GRM.Rights.Events.Clearance;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Schema;
-using Newtonsoft.Json.Schema.Generation;
 using NUnit.Framework;
-using UMG.EAI.DealMessagingClassLibrary.deal;
 
 namespace JsonSchema.Tests
 {
     public class ExampleGenerator
     {
-        public static List<object> GetExamples()
+        public static void GenerateExamples(string folderPath, params Type[] types)
         {
-            var examples = new List<object>();
-
             var fixture = new Fixture();
 
-            var sampleClearanceSignedEvent = fixture.Create<SampleClearanceSignedEvent>();
-            var sideArtistEvent = fixture.Create<SideArtistLabelWaiverClearanceSignedEvent>();
-
-            examples.Add(sampleClearanceSignedEvent);
-            examples.Add(sideArtistEvent);
-
-            return examples;
-        }
-    }
-
-    public class TestSchemaDefinition
-    {
-        [Test]
-        public void GenerateExampleJsonFiles()
-        {
-            var examples = ExampleGenerator.GetExamples();
-
+            var examples = types.Select(fixture.Create).ToList();
 
             foreach (var example in examples)
             {
                 var exampleJson = JObject.FromObject(example);
 
-                File.WriteAllText(Path.Combine(GenerateSchemaDefinitionsTest.PathOfSchemaDefinitionsFolder, $"{example.GetType().Name}.json"), exampleJson.ToString());
+                File.WriteAllText(Path.Combine(folderPath, $"{example.GetType().Name}.json"), exampleJson.ToString());
             }
+        }
+    }
+
+    public static class FixtureExtensions
+    {
+        public static object Create(this ISpecimenBuilder specimenBuilder, Type type)
+        {
+            var context = new SpecimenContext(specimenBuilder);
+            return context.Resolve(type);
+        }
+    }
+    
+    public class TestSchemaDefinition
+    {
+        [Test]
+        public void GenerateExampleJsonFiles()
+        {
+            ExampleGenerator.GenerateExamples(GenerateSchemaDefinitionsTest.PathOfSchemaDefinitionsFolder, typeof(SampleClearanceSignedEvent), typeof(SideArtistLabelWaiverClearanceSignedEvent));
         }
 
         [Test]
