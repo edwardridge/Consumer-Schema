@@ -11,6 +11,36 @@ using System.Linq;
 
 namespace ConsumerSchema.Checker
 {
+    public interface IGetSchemaDefinitions
+    {
+        IEnumerable<SchemaDefinition> GetSchemaDefinitions();
+    }
+
+    public class GetSchemaDefintionsFromFolder : IGetSchemaDefinitions
+    {
+        private readonly string folderPath;
+
+        public GetSchemaDefintionsFromFolder(string folderPath)
+        {
+            this.folderPath = folderPath;
+        }
+
+        public IEnumerable<SchemaDefinition> GetSchemaDefinitions()
+        {
+            var schemaDefinitionFiles = Directory.GetFiles(this.folderPath, "*.schema.json");
+
+            var schemaDefinitions = new List<SchemaDefinition>();
+
+            foreach (var schemaDefinitionFile in schemaDefinitionFiles)
+            {
+                var schemaDefintionsFromFile = File.ReadAllText(schemaDefinitionFile);
+                schemaDefinitions.Add(JsonConvert.DeserializeObject<SchemaDefinition>(schemaDefintionsFromFile));
+            }
+
+            return schemaDefinitions;
+        }
+    }
+
     public class SchemaChecker
     {
         private JSchemaReaderSettings settings;
@@ -23,29 +53,17 @@ namespace ConsumerSchema.Checker
             //ED: Comment me out
             //this.settings.Validators = new List<JsonValidator>() { new GuidFormatValidator() };
         }
-
-        internal SchemaResults CheckSchemasByProvidingDefinitions(IEnumerable<SchemaDefinition> schemaDefinitions, Type[] typesOfMessagesToCheck)
-        {
-            var examples = this.GenerateExampleMessages(typesOfMessagesToCheck);
-
-            return CheckSchemaDefinitionsMatchExamples(schemaDefinitions, examples);
-        }
-
-        public SchemaResults CheckSchemas(string folderPath, Type[] typesOfMessagesToCheck)
-        {
-            var examples = this.GenerateExampleMessages(typesOfMessagesToCheck);
-
-            return CheckSchemas(folderPath, examples);
-        }
         
-        internal SchemaResults CheckSchemas(string folderPath, IEnumerable<SchemaExample> examples)
+        public SchemaResults CheckSchemas(IGetSchemaDefinitions getSchemaDefinitions, Type[] typesOfMessagesToCheck)
         {
-            var schemaDefinitions = GetSchemaDefinitions(folderPath);
-            
+            var examples = this.GenerateExampleMessages(typesOfMessagesToCheck);
+
+            var schemaDefinitions = getSchemaDefinitions.GetSchemaDefinitions();
+
             return CheckSchemaDefinitionsMatchExamples(schemaDefinitions, examples);
         }
 
-        private List<SchemaExample> GenerateExampleMessages(IEnumerable<Type> messageTypesToCheck)
+        private IEnumerable<SchemaExample> GenerateExampleMessages(IEnumerable<Type> messageTypesToCheck)
         {
             var examples = new List<SchemaExample>();
             
@@ -59,21 +77,6 @@ namespace ConsumerSchema.Checker
                 });
             }
             return examples;
-        }
-
-        private static List<SchemaDefinition> GetSchemaDefinitions(string folderPath)
-        {
-            var schemaDefinitionFiles = Directory.GetFiles(folderPath, "*.schema.json");
-
-            var schemaDefinitions = new List<SchemaDefinition>();
-
-            foreach (var schemaDefinitionFile in schemaDefinitionFiles)
-            {
-                var schemaDefintionsFromFile = File.ReadAllText(schemaDefinitionFile);
-                schemaDefinitions.Add(JsonConvert.DeserializeObject<SchemaDefinition>(schemaDefintionsFromFile));
-            }
-
-            return schemaDefinitions;
         }
 
         private SchemaResults CheckSchemaDefinitionsMatchExamples(IEnumerable<SchemaDefinition> schemaDefinitions, IEnumerable<SchemaExample> examples)

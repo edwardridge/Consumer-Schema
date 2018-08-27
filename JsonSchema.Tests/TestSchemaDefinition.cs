@@ -74,7 +74,7 @@ namespace JsonSchema.Tests
                     SchemaName = "ExampleMessageThatShouldPass"
                 }
             };
-            var schemaResults = new SchemaChecker().CheckSchemasByProvidingDefinitions(schemaDefinitions, new []{ typeof(ExampleMessageThatShouldPass) });
+            var schemaResults = new SchemaChecker().CheckSchemas(new DefineSchemaDefinitions(schemaDefinitions), new []{ typeof(ExampleMessageThatShouldPass) });
 
             var hasErrors = schemaResults.HasErrors();
 
@@ -95,7 +95,7 @@ namespace JsonSchema.Tests
                     SchemaName = typeof(ExampleMessageThatShouldFailBecauseOfPropertyName).Name
                 }
             };
-            var schemaResults = new SchemaChecker().CheckSchemasByProvidingDefinitions(schemaDefinitions, new[] { typeof(ExampleMessageThatShouldFailBecauseOfPropertyName) });
+            var schemaResults = new SchemaChecker().CheckSchemas(new DefineSchemaDefinitions(schemaDefinitions), new[] { typeof(ExampleMessageThatShouldFailBecauseOfPropertyName) });
 
             var hasErrors = schemaResults.HasErrors();
 
@@ -110,7 +110,7 @@ namespace JsonSchema.Tests
             var generatedSchema = this.GetGeneratedSchemaWithOneStringProperty();
 
             var schemaDefinitions = GenerateTestSchemaDefinitions(generatedSchema, typeof(ExampleMessageThatShouldFailBecauseOfPropertyType));
-            var schemaResults = new SchemaChecker().CheckSchemasByProvidingDefinitions(schemaDefinitions, new[] { typeof(ExampleMessageThatShouldFailBecauseOfPropertyType) });
+            var schemaResults = new SchemaChecker().CheckSchemas(new DefineSchemaDefinitions(schemaDefinitions), new[] { typeof(ExampleMessageThatShouldFailBecauseOfPropertyType) });
 
             var hasErrors = schemaResults.HasErrors();
 
@@ -126,7 +126,7 @@ namespace JsonSchema.Tests
         {
             var schema = this.GetGeneratedSchemaWithOneSubclassProperty();
             var schemaDefinitions = GenerateTestSchemaDefinitions(schema, typeof(ExampleMessageThatShouldFailBecauseOfSubClass));
-            var schemaResults = new SchemaChecker().CheckSchemasByProvidingDefinitions(schemaDefinitions, new[] { typeof(ExampleMessageThatShouldFailBecauseOfSubClass) });
+            var schemaResults = new SchemaChecker().CheckSchemas(new DefineSchemaDefinitions(schemaDefinitions), new[] { typeof(ExampleMessageThatShouldFailBecauseOfSubClass) });
 
             var hasErrors = schemaResults.HasErrors();
 
@@ -140,11 +140,26 @@ namespace JsonSchema.Tests
         {
             var schema = this.GetGeneratedSchemaWithOneSubclassProperty();
             var schemaDefinitions = GenerateTestSchemaDefinitions(schema, typeof(ExampleMessageThatShouldPassWithSubClass));
-            var schemaResults = new SchemaChecker().CheckSchemasByProvidingDefinitions(schemaDefinitions, new[] { typeof(ExampleMessageThatShouldPassWithSubClass) });
+            var schemaResults = new SchemaChecker().CheckSchemas(new DefineSchemaDefinitions(schemaDefinitions), new[] { typeof(ExampleMessageThatShouldPassWithSubClass) });
 
             var hasErrors = schemaResults.HasErrors();
 
             Assert.IsFalse(hasErrors);
+        }
+
+        public class DefineSchemaDefinitions : IGetSchemaDefinitions
+        {
+            private readonly IEnumerable<SchemaDefinition> schemaDefinitions;
+
+            public DefineSchemaDefinitions(IEnumerable<SchemaDefinition> schemaDefinitions)
+            {
+                this.schemaDefinitions = schemaDefinitions;
+            }
+
+            public IEnumerable<SchemaDefinition> GetSchemaDefinitions()
+            {
+                return this.schemaDefinitions;
+            }
         }
 
         private static List<SchemaDefinition> GenerateTestSchemaDefinitions(string generatedSchema, Type type)
