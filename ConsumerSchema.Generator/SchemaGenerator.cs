@@ -24,7 +24,7 @@ namespace ConsumerSchema.Generator
             return CreateSchemaDefinition(type, consumerName);
         }
 
-        public void GenerateSchemaDefinitionsToFile(string consumerName, string folderPath, params Type[] types)
+        public void GenerateSchemaDefinitionsToFolder(string folderPath, string consumerName, params Type[] types)
         {
             var schemaDefinitions = types.Select(s => CreateSchemaDefinition(s, consumerName)).ToList();
 

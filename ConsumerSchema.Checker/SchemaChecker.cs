@@ -162,15 +162,14 @@ namespace ConsumerSchema.Checker
         {
             if (this.HasErrors())
             {
-                return "";
+                return $@"Schema definition checking has failed. This indicates a recent refactoring would break a consumer of one of your messages. 
+Errors: {this.GetErrors()}";
             }
             else
             {
-                return $"All valid for {this.Consumer}";
+                return $"All valid";
             }
         }
-
-        public string Consumer { get; set; }
 
         public IEnumerable<string> GetErrors()
         {

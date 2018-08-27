@@ -88,10 +88,6 @@
       <Project>{FE084E77-4CA3-48A0-9AE0-EB05F825BD4B}</Project>
       <Name>ConsumerSchema.Generator</Name>
     </ProjectReference>
-    <ProjectReference Include="..\JsonSchema\JsonSchema.csproj">
-      <Project>{BBE7512B-783A-4B65-8136-878A8D5E9F00}</Project>
-      <Name>JsonSchema</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
