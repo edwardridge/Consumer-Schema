@@ -101,7 +101,7 @@ namespace JsonSchema.Tests
 
             Assert.IsTrue(hasErrors);
             var errors = schemaResults.GetErrors();
-            Assert.AreEqual(errors.First(), "Class Name: ExampleMessageThatShouldFailBecauseOfPropertyName. Consumer: Test. Errors: Required properties are missing from object: PropertyOne. Path '', line 1, position 1.");
+            Assert.AreEqual(errors.First(), "Class Name: ExampleMessageThatShouldFailBecauseOfPropertyName. Consumer: Test. Errors: Required properties are missing from object: PropertyOne. Path ''.");
         }
 
         [Test]
@@ -116,7 +116,7 @@ namespace JsonSchema.Tests
 
             Assert.IsTrue(hasErrors);
             var errors = schemaResults.GetErrors();
-            var regexMatch = new Regex("Invalid type. Expected String, Null but got Integer. Path 'PropertyOne', line 2, position [19|20].");
+            var regexMatch = new Regex("Invalid type. Expected String, Null but got Integer. Path 'PropertyOne'.");
             var result = regexMatch.Match(errors.First());
             Assert.AreEqual(result.Success, true);
         }
@@ -132,7 +132,7 @@ namespace JsonSchema.Tests
 
             Assert.IsTrue(hasErrors);
             var errors = schemaResults.GetErrors();
-            Assert.AreEqual(errors.First(), "Class Name: ExampleMessageThatShouldFailBecauseOfSubClass. Consumer: Test. Errors: Required properties are missing from object: PropertyOne. Path '', line 1, position 1.");
+            Assert.AreEqual(errors.First(), "Class Name: ExampleMessageThatShouldFailBecauseOfSubClass. Consumer: Test. Errors: Required properties are missing from object: PropertyOne. Path ''.");
         }
 
         [Test]

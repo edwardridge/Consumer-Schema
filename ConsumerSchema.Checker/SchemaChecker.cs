@@ -14,25 +14,26 @@ namespace ConsumerSchema.Checker
     public class SchemaChecker
     {
         private JSchemaReaderSettings settings;
+        private IExampleGenerator exampleGenerator;
 
         public SchemaChecker()
         {
             this.settings = new JSchemaReaderSettings();
-
+            this.exampleGenerator = new ExampleGenerator();
             //ED: Comment me out
             //this.settings.Validators = new List<JsonValidator>() { new GuidFormatValidator() };
         }
 
         internal SchemaResults CheckSchemasByProvidingDefinitions(IEnumerable<SchemaDefinition> schemaDefinitions, Type[] typesOfMessagesToCheck)
         {
-            var examples = GenerateExampleMessages(typesOfMessagesToCheck);
+            var examples = this.GenerateExampleMessages(typesOfMessagesToCheck);
 
             return CheckSchemaDefinitionsMatchExamples(schemaDefinitions, examples);
         }
 
         public SchemaResults CheckSchemas(string folderPath, Type[] typesOfMessagesToCheck)
         {
-            var examples = GenerateExampleMessages(typesOfMessagesToCheck);
+            var examples = this.GenerateExampleMessages(typesOfMessagesToCheck);
 
             return CheckSchemas(folderPath, examples);
         }
@@ -44,17 +45,17 @@ namespace ConsumerSchema.Checker
             return CheckSchemaDefinitionsMatchExamples(schemaDefinitions, examples);
         }
 
-        private static List<SchemaExample> GenerateExampleMessages(IEnumerable<Type> messageTypesToCheck)
+        private List<SchemaExample> GenerateExampleMessages(IEnumerable<Type> messageTypesToCheck)
         {
             var examples = new List<SchemaExample>();
             
             foreach (var messageTypeToCheck in messageTypesToCheck)
             {
-                var example = ExampleGenerator.GenerateExample(messageTypeToCheck);
+                var example = this.exampleGenerator.GenerateExample(messageTypeToCheck);
                 examples.Add(new SchemaExample()
                 {
                     SchemaName = messageTypeToCheck.Name,
-                    Example = JObject.Parse(example)
+                    Example = example
                 });
             }
             return examples;
@@ -116,15 +117,20 @@ namespace ConsumerSchema.Checker
         }
     }
 
-    public class ExampleGenerator
+    public interface IExampleGenerator
     {
-        public static string GenerateExample(Type type)
+        JObject GenerateExample(Type type);
+    }
+
+    public class ExampleGenerator : IExampleGenerator
+    {
+        public JObject GenerateExample(Type type)
         {
             var fixture = new Fixture();
 
             var example = fixture.Create(type);
             var exampleAsJObect = JObject.FromObject(example);
-            return exampleAsJObect.ToString();
+            return exampleAsJObect;
         }
     }
 
@@ -142,89 +148,5 @@ namespace ConsumerSchema.Checker
         public JObject Example { get; set; }
 
         public string SchemaName { get; set; }
-    }
-
-    public class SchemaResults
-    {
-        private List<SchemaResult> schemaResults;
-
-        public SchemaResults()
-        {
-            this.schemaResults = new List<SchemaResult>();
-        }
-        
-        internal void AddResult(SchemaResult result)
-        {
-            this.schemaResults.Add(result);
-        }
-
-        public string GetErrorsSummary()
-        {
-            if (this.HasErrors())
-            {
-                return $@"Schema definition checking has failed. This indicates a recent refactoring would break a consumer of one of your messages. 
-Errors: {this.GetErrors()}";
-            }
-            else
-            {
-                return $"All valid";
-            }
-        }
-
-        public IEnumerable<string> GetErrors()
-        {
-            return schemaResults.Select(s => s.GetResult());
-        }
-
-        public bool HasErrors()
-        {
-            return schemaResults.Any(s => s.IsValid == false);
-        }
-    }
-
-    public class SchemaResult
-    {
-        public string Class { get; set; }
-
-        public List<string> Errors { get; set; } = new List<string>();
-
-        public bool IsValid { get; set; }
-
-        public string Consumer { get; set; }
-
-        public string GetResult()
-        {
-            string errors;
-            if (this.Errors.Any())
-            {
-                errors = string.Join(",", this.Errors);
-            }
-            else
-            {
-                errors = "All valid!";
-            }
-            return $"Class Name: {this.Class}. Consumer: {this.Consumer}. Errors: {errors}";
-        }
-
-        public static SchemaResult CreateSuccess(string schemaName, string consumer)
-        {
-            return new SchemaResult()
-            {
-                Class = schemaName,
-                IsValid = true,
-                Consumer = consumer
-            };
-        }
-
-        public static SchemaResult CreateFailure(string schemaName, string consumer, params string[] errors)
-        {
-            return new SchemaResult()
-            {
-                Errors = errors.ToList(),
-                IsValid = false,
-                Class = schemaName,
-                Consumer = consumer
-            };
-        }
     }
 }
