@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ConsumerSchema.Checker
@@ -22,7 +23,7 @@ namespace ConsumerSchema.Checker
             if (this.HasErrors())
             {
                 return $@"Schema definition checking has failed. This indicates a recent refactoring would break a consumer of one of your messages. 
-Errors: {this.GetErrors()}";
+Errors: {string.Join(Environment.NewLine, this.GetErrors())}";
             }
             else
             {
