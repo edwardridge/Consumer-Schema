@@ -19,7 +19,12 @@ namespace ConsumerSchema.Generator
             //generator.GenerationProviders.Add(new GuidSchemaGenerationProvider());
         }
 
-        public void GenerateSchemaDefinitions(string consumerName, string folderPath, params Type[] types)
+        public SchemaDefinition GenerateSchemaDefinition(string consumerName, Type type)
+        {
+            return CreateSchemaDefinition(type, consumerName);
+        }
+
+        public void GenerateSchemaDefinitionsToFile(string consumerName, string folderPath, params Type[] types)
         {
             var schemaDefinitions = types.Select(s => CreateSchemaDefinition(s, consumerName)).ToList();
 

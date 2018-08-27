@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AutoFixture;
+using AutoFixture.Kernel;
 using ConsumerSchema.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace ConsumerSchema.Checker
 {
-
     public class SchemaChecker
     {
         private JSchemaReaderSettings settings;
@@ -24,28 +23,38 @@ namespace ConsumerSchema.Checker
             //this.settings.Validators = new List<JsonValidator>() { new GuidFormatValidator() };
         }
 
-        public SchemaResults CheckSchemas(string folderPath)
+        internal SchemaResults CheckSchemasByProvidingDefinitions(IEnumerable<SchemaDefinition> schemaDefinitions, Type[] typesOfMessagesToCheck)
         {
-            var schemaDefinitions = GetSchemaDefinitions(folderPath);
-
-            var examples = GetSchemaExamples(folderPath);
+            var examples = GenerateExampleMessages(typesOfMessagesToCheck);
 
             return CheckSchemaDefinitionsMatchExamples(schemaDefinitions, examples);
         }
 
-        private static List<SchemaExample> GetSchemaExamples(string folderPath)
+        public SchemaResults CheckSchemas(string folderPath, Type[] typesOfMessagesToCheck)
+        {
+            var examples = GenerateExampleMessages(typesOfMessagesToCheck);
+
+            return CheckSchemas(folderPath, examples);
+        }
+        
+        internal SchemaResults CheckSchemas(string folderPath, IEnumerable<SchemaExample> examples)
+        {
+            var schemaDefinitions = GetSchemaDefinitions(folderPath);
+            
+            return CheckSchemaDefinitionsMatchExamples(schemaDefinitions, examples);
+        }
+
+        private static List<SchemaExample> GenerateExampleMessages(IEnumerable<Type> messageTypesToCheck)
         {
             var examples = new List<SchemaExample>();
-
-            var exampleFiles = Directory.GetFiles(folderPath, "*.json").Where(w => w.Contains("schema") == false);
-
-            foreach (var exampleFile in exampleFiles)
+            
+            foreach (var messageTypeToCheck in messageTypesToCheck)
             {
-                var exampleString = File.ReadAllText(exampleFile);
+                var example = ExampleGenerator.GenerateExample(messageTypeToCheck);
                 examples.Add(new SchemaExample()
                 {
-                    SchemaName = Path.GetFileNameWithoutExtension(exampleFile),
-                    Example = JObject.Parse(exampleString)
+                    SchemaName = messageTypeToCheck.Name,
+                    Example = JObject.Parse(example)
                 });
             }
             return examples;
@@ -87,9 +96,7 @@ namespace ConsumerSchema.Checker
                 return SchemaResult.CreateFailure(schemaDefinition.SchemaName, $"Cannot find example for {schemaDefinition.SchemaName}");
             }
 
-            var exampleJson = JObject.FromObject(example.Example);
-
-            var schemaResult = CheckSchema(exampleJson, schemaDefinition);
+            var schemaResult = CheckSchema(example.Example, schemaDefinition);
 
             return schemaResult;
         }
@@ -102,16 +109,37 @@ namespace ConsumerSchema.Checker
 
             if (isValid)
             {
-                return SchemaResult.CreateSuccess(definition.SchemaName);
+                return SchemaResult.CreateSuccess(definition.SchemaName, definition.ConsumerName);
             }
 
-            return SchemaResult.CreateFailure(definition.SchemaName, errors.ToArray());
+            return SchemaResult.CreateFailure(definition.SchemaName, definition.ConsumerName, errors.ToArray());
+        }
+    }
+
+    public class ExampleGenerator
+    {
+        public static string GenerateExample(Type type)
+        {
+            var fixture = new Fixture();
+
+            var example = fixture.Create(type);
+            var exampleAsJObect = JObject.FromObject(example);
+            return exampleAsJObect.ToString();
+        }
+    }
+
+    public static class FixtureExtensions
+    {
+        public static object Create(this ISpecimenBuilder specimenBuilder, Type type)
+        {
+            var context = new SpecimenContext(specimenBuilder);
+            return context.Resolve(type);
         }
     }
 
     public class SchemaExample
     {
-        public object Example { get; set; }
+        public JObject Example { get; set; }
 
         public string SchemaName { get; set; }
     }
@@ -124,30 +152,29 @@ namespace ConsumerSchema.Checker
         {
             this.schemaResults = new List<SchemaResult>();
         }
-
-        public SchemaResults(List<SchemaResult> schemaResults)
-        {
-            this.schemaResults = schemaResults;
-        }
-
-        public void AddSuccess(string schemaName)
-        {
-            this.schemaResults.Add(SchemaResult.CreateSuccess(schemaName));
-        }
-
-        public void AddFailure(string schemaName, params string[] errors)
-        {
-            this.schemaResults.Add(SchemaResult.CreateFailure(schemaName, errors));
-        }
-
-        public void AddResult(SchemaResult result)
+        
+        internal void AddResult(SchemaResult result)
         {
             this.schemaResults.Add(result);
         }
 
-        public string GetErrors()
+        public string GetErrorsSummary()
         {
-            return string.Join(",", schemaResults.SelectMany(s => s.Errors).ToList());
+            if (this.HasErrors())
+            {
+                return "";
+            }
+            else
+            {
+                return $"All valid for {this.Consumer}";
+            }
+        }
+
+        public string Consumer { get; set; }
+
+        public IEnumerable<string> GetErrors()
+        {
+            return schemaResults.Select(s => s.GetResult());
         }
 
         public bool HasErrors()
@@ -164,27 +191,40 @@ namespace ConsumerSchema.Checker
 
         public bool IsValid { get; set; }
 
-        public override string ToString()
+        public string Consumer { get; set; }
+
+        public string GetResult()
         {
-            return $"Class Name: {this.Class}. Errors: {string.Join(",", this.Errors)}";
+            string errors;
+            if (this.Errors.Any())
+            {
+                errors = string.Join(",", this.Errors);
+            }
+            else
+            {
+                errors = "All valid!";
+            }
+            return $"Class Name: {this.Class}. Consumer: {this.Consumer}. Errors: {errors}";
         }
 
-        public static SchemaResult CreateSuccess(string schemaName)
+        public static SchemaResult CreateSuccess(string schemaName, string consumer)
         {
             return new SchemaResult()
             {
                 Class = schemaName,
-                IsValid = true
+                IsValid = true,
+                Consumer = consumer
             };
         }
 
-        public static SchemaResult CreateFailure(string schemaName, params string[] errors)
+        public static SchemaResult CreateFailure(string schemaName, string consumer, params string[] errors)
         {
             return new SchemaResult()
             {
                 Errors = errors.ToList(),
                 IsValid = false,
-                Class = schemaName
+                Class = schemaName,
+                Consumer = consumer
             };
         }
     }

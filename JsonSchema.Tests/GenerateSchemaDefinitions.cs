@@ -24,7 +24,7 @@ namespace JsonSchema.Tests
         public void GenerateSchemaDefinition()
         {
             var schemaGenerator = new SchemaGenerator();
-            schemaGenerator.GenerateSchemaDefinitions("LPI Rights Service", PathOfSchemaDefinitionsFolder, typeof(SampleClearanceSignedEvent), typeof(SideArtistLabelWaiverClearanceSignedEvent));
+            schemaGenerator.GenerateSchemaDefinitionsToFile("LPI Rights Service", PathOfSchemaDefinitionsFolder, typeof(SampleClearanceSignedEvent), typeof(SideArtistLabelWaiverClearanceSignedEvent));
         }
     }
     
