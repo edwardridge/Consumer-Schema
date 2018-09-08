@@ -19,6 +19,8 @@ A consumer will first generate the schemas for the messages they are using, pass
 
 This will generate a .json.schema file for each of the consumed messages in the folder specified. This should then be sent to the producer of the messages.
 
+Nuget package: https://www.nuget.org/packages/ConsumerSchema.Generator/
+
 ## Schema Checker
 Once the producer has received the schema files, they can be used in a test to assert that the shape of the actual messages being produced hasn't changed from the consumers expectations. Here's an example (using NUnit):
 
@@ -44,3 +46,5 @@ If the message produced doesn't match the schema definition, the errors summary 
 ``` C#
 "Class Name: MessageOne. Consumer: The Consumer Name. Errors: Required properties are missing from object: PropertyOne. Path ''."
 ```
+
+Nuget package: https://www.nuget.org/packages/ConsumerSchema.Checker/
