@@ -13,7 +13,8 @@ A consumer will first generate the schemas for the messages they are using, pass
   var consumerName = "The Consumer Name";
   var folderToCreateSchemasTo = "C:/temp";
   var messagesIConsume = new[] { typeof(MessageOne), typeof(MessageTwo) };
-  new SchemaGenerator().GenerateSchemaDefinitionsToFolder(folderToCreateSchemasTo, consumerName, messagesIConsume);
+  var schemaGenerator = new SchemaGenerator();
+  schemaGenerator.GenerateSchemaDefinitionsToFolder(folderToCreateSchemasTo, consumerName, messagesIConsume);
 ```
 
 This will generate a .json.schema file for each of the consumed messages in the folder specified. This should then be sent to the producer of the messages.
@@ -25,15 +26,21 @@ Once the producer has received the schema files, they can be used in a test to a
   [Test]
   public void CheckSchemaDefinitions(){
     var messagesIProduce = new[] { typeof(MessageOne), typeof(MessageTwo) };
-    var checkSchemaResults = new SchemaChecker().CheckSchemas(new GetSchemaDefintionsFromFolder("C:/PathToSchemas"), messagesIProduce);
+    var schemaChecker = new SchemaChecker();
+    var schemaCheck = schemaChecker.CheckSchemas(new GetSchemaDefintionsFromFolder("C:/PathToSchemas"), messagesIProduce);
 
-    if (checkSchemaResults.HasErrors())
+    if (schemaCheck.HasErrors())
     {
       Assert.Pass();
     }
     else
     {
-      Assert.Fail(checkSchemaResults.GetErrorsSummary());
+      Assert.Fail(schemaCheck.GetErrorsSummary());
     }
   }
+```
+
+If the message produced doesn't match the schema definition, the errors summary will display what doesn't match, for example:
+``` C#
+"Class Name: MessageOne. Consumer: The Consumer Name. Errors: Required properties are missing from object: PropertyOne. Path ''."
 ```
