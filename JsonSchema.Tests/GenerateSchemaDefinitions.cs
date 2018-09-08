@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ConsumerSchema.Generator;
-using GRM.Rights.Events.Clearance;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
@@ -24,7 +23,7 @@ namespace JsonSchema.Tests
         public void GenerateSchemaDefinition()
         {
             var schemaGenerator = new SchemaGenerator();
-            schemaGenerator.GenerateSchemaDefinitionsToFolder(PathOfSchemaDefinitionsFolder, "LPI Rights Service", typeof(SampleClearanceSignedEvent), typeof(SideArtistLabelWaiverClearanceSignedEvent));
+            //schemaGenerator.GenerateSchemaDefinitionsToFolder(PathOfSchemaDefinitionsFolder, "LPI Rights Service", typeof(SampleClearanceSignedEvent), typeof(SideArtistLabelWaiverClearanceSignedEvent));
         }
     }
     

@@ -8,7 +8,6 @@ using AutoFixture.Kernel;
 using ConsumerSchema.Checker;
 using ConsumerSchema.Core;
 using ConsumerSchema.Generator;
-using GRM.Rights.Events.Clearance;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using NUnit.Framework;
