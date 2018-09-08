@@ -48,3 +48,6 @@ If the message produced doesn't match the schema definition, the errors summary 
 ```
 
 Nuget package: https://www.nuget.org/packages/ConsumerSchema.Checker/
+
+## CI
+https://ci.appveyor.com/project/edwardridge/jsonschemachecker
