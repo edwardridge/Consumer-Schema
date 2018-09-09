@@ -35,11 +35,11 @@ Once the producer has received the schema files, they can be used in a test to a
 
     if (schemaCheck.HasErrors())
     {
-      Assert.Pass();
+      Assert.Fail(schemaCheck.GetErrorsSummary());
     }
     else
     {
-      Assert.Fail(schemaCheck.GetErrorsSummary());
+      Assert.Pass(); 
     }
   }
 ```
