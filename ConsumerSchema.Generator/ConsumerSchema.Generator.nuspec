@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>ConsumerSchema.Generator</id>
+    <version>0.0.1</version>
+    <title>Schema Generator</title>
+    <authors>Edward Ridge</authors>
+    <owners>Edward Ridge</owners>
+    <projectUrl>https://github.com/edwardridge/Consumer-Schema</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>The Schema Generator for the Consumer Schema Tool</description>
+    <releaseNotes>First release</releaseNotes>
+    <copyright>Copyright 2018</copyright>
+    <tags>CDC, Consumer Driven Conracts, Contract Testing</tags>
+    <dependencies>
+      <dependency id="Newtonsoft.Json.Schema" version="3.0.9" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src=".\bin\Debug\ConsumerSchema.Core.dll" target="lib/net/ConsumerSchema.Core.dll" />
+    <file src=".\bin\Debug\ConsumerSchema.Generator.dll" target="lib/net/ConsumerSchema.Generator.dll" />
+  </files>
+</package>

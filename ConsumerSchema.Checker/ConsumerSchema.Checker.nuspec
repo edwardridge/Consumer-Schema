@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>ConsumerSchema.Checker</id>
+    <version>0.0.1</version>
+    <title>Schema Checker</title>
+    <authors>Edward Ridge</authors>
+    <owners>Edward Ridge</owners>
+    <projectUrl>https://github.com/edwardridge/Consumer-Schema</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>The Schema Checker for the Consumer Schema Tool</description>
+    <releaseNotes>First release</releaseNotes>
+    <copyright>Copyright 2018</copyright>
+    <tags>CDC, Consumer Driven Conracts, Contract Testing</tags>
+    <dependencies>
+      <dependency id="Newtonsoft.Json.Schema" version="3.0.9" />
+      <dependency id="AutoFixture" version="4.1.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src=".\bin\Debug\ConsumerSchema.Core.dll" target="lib/net/ConsumerSchema.Core.dll" />
+    <file src=".\bin\Debug\ConsumerSchema.Checker.dll" target="lib/net/ConsumerSchema.Checker.dll" />
+  </files>
+</package>
