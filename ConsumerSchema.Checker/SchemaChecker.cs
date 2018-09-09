@@ -53,8 +53,13 @@ namespace ConsumerSchema.Checker
             //ED: Comment me out
             //this.settings.Validators = new List<JsonValidator>() { new GuidFormatValidator() };
         }
-        
-        public SchemaResults CheckSchemas(IGetSchemaDefinitions getSchemaDefinitions, Type[] typesOfMessagesToCheck)
+
+        public SchemaResults CheckSchemasFromFolder(string folderPath, Type[] typesOfMessagesToCheck){
+            var getSchemasFromFolder = new GetSchemaDefintionsFromFolder(folderPath);
+            return this.CheckSchemas(getSchemasFromFolder, typesOfMessagesToCheck);
+        }
+
+        internal SchemaResults CheckSchemas(IGetSchemaDefinitions getSchemaDefinitions, Type[] typesOfMessagesToCheck)
         {
             var examples = this.GenerateExampleMessages(typesOfMessagesToCheck);
 
