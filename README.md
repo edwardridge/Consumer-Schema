@@ -31,7 +31,7 @@ Once the producer has received the schema files, they can be used in a test to a
   public void CheckSchemaDefinitions(){
     var messagesIProduce = new[] { typeof(MessageOne), typeof(MessageTwo) };
     var schemaChecker = new SchemaChecker();
-    var schemaCheck = schemaChecker.CheckSchemas(new GetSchemaDefintionsFromFolder("C:/PathToSchemas"), messagesIProduce);
+    var schemaCheck = schemaChecker.CheckSchemasFromFolder("C:/PathToSchemas", messagesIProduce);
 
     if (schemaCheck.HasErrors())
     {
