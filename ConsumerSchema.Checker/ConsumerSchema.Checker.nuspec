@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>ConsumerSchema.Checker</id>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <title>Schema Checker</title>
     <authors>Edward Ridge</authors>
     <owners>Edward Ridge</owners>
