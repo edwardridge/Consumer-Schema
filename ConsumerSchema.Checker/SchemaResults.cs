@@ -6,16 +6,16 @@ namespace ConsumerSchema.Checker
 {
     public class SchemaResults
     {
-        private List<SchemaResult> schemaResults;
+        public List<SchemaResult> SchemaResultsList;
 
         public SchemaResults()
         {
-            this.schemaResults = new List<SchemaResult>();
+            this.SchemaResultsList = new List<SchemaResult>();
         }
         
         internal void AddResult(SchemaResult result)
         {
-            this.schemaResults.Add(result);
+            this.SchemaResultsList.Add(result);
         }
 
         public string GetErrorsSummary()
@@ -33,12 +33,12 @@ Errors: {string.Join(Environment.NewLine, this.GetErrors())}";
 
         public IEnumerable<string> GetErrors()
         {
-            return schemaResults.Select(s => s.GetResult());
+            return SchemaResultsList.Select(s => s.GetResult());
         }
 
         public bool HasErrors()
         {
-            return schemaResults.Any(s => s.IsValid == false);
+            return SchemaResultsList.Any(s => s.IsValid == false);
         }
     }
 
