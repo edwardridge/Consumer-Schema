@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>ConsumerSchema.Generator</id>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
     <title>Schema Generator</title>
     <authors>Edward Ridge</authors>
     <owners>Edward Ridge</owners>
@@ -17,7 +17,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src=".\bin\Debug\ConsumerSchema.Core.dll" target="lib/net/ConsumerSchema.Core.dll" />
-    <file src=".\bin\Debug\ConsumerSchema.Generator.dll" target="lib/net/ConsumerSchema.Generator.dll" />
+    <file src=".\bin\Debug\ConsumerSchema.Core.dll" target="lib/net47/ConsumerSchema.Core.dll" />
+    <file src=".\bin\Debug\ConsumerSchema.Generator.dll" target="lib/net47/ConsumerSchema.Generator.dll" />
   </files>
 </package>
