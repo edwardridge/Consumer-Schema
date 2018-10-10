@@ -6,8 +6,8 @@ build:
   verbosity: minimal
 deploy:
   provider: NuGet
-  api_key:
-    secure: oy2iob2swqvpbarjcvcayekcx3yli4quxfjydudvk6ro64
+  api_key: 
+    secure: B7l7MRlpDCaX+ooUhRFZqkFC5UtMdnG1g1meXmUzPPdofRFVzb9FQlg+HR/EzFTk
   skip_symbols: true
   artifact: /.*\.nupkg/
   on: 
