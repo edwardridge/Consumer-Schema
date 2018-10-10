@@ -2,7 +2,8 @@ version: 1.0.{build}
 image: Visual Studio 2017
 before_build:
 - cmd: nuget restore
-build:
+build:  
+  publish_nuget: true
   verbosity: minimal
 deploy:
   provider: NuGet
