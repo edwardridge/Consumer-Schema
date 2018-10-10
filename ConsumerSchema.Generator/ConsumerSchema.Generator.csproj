@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.0.4</Version>
+    <Version>0.0.5</Version>
     <Authors>Edward Ridge</Authors>
     <PackageProjectUrl>https://github.com/edwardridge/Consumer-Schema</PackageProjectUrl>
     <Description>The Schema Generator for the Consumer Schema Tool</Description>
@@ -11,6 +11,6 @@
     <PackageTags>CDC, Consumer Driven Conracts, Contract Testing</PackageTags>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ConsumerSchema.Core\ConsumerSchema.Core.csproj" />
+    <PackageReference Include="Newtonsoft.Json.Schema" Version="2.0.7" />
   </ItemGroup>
 </Project>

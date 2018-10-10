@@ -6,11 +6,11 @@ using System.Text.RegularExpressions;
 using AutoFixture;
 using AutoFixture.Kernel;
 using ConsumerSchema.Checker;
-using ConsumerSchema.Core;
 using ConsumerSchema.Generator;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using NUnit.Framework;
+using SchemaDefinition = ConsumerSchema.Checker.SchemaDefinition;
 
 namespace JsonSchema.Tests
 {

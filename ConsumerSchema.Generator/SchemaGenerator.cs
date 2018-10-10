@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using ConsumerSchema.Core;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Schema;
 using Newtonsoft.Json.Schema.Generation;
 
 namespace ConsumerSchema.Generator
@@ -51,5 +51,14 @@ namespace ConsumerSchema.Generator
 
             return schemaDefinition;
         }
+    }
+
+    public class SchemaDefinition
+    {
+        public JSchema Schema { get; set; }
+
+        public string SchemaName { get; set; }
+
+        public string ConsumerName { get; set; }
     }
 }

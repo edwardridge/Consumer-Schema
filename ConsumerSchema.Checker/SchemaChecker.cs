@@ -1,13 +1,12 @@
 ﻿using AutoFixture;
 using AutoFixture.Kernel;
-using ConsumerSchema.Core;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ConsumerSchema.Checker
 {

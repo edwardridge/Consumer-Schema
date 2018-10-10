@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json.Schema;
 
 namespace ConsumerSchema.Checker
 {
@@ -86,5 +87,14 @@ Errors: {string.Join(Environment.NewLine, this.GetErrors())}";
                 Consumer = consumer
             };
         }
+    }
+
+    public class SchemaDefinition
+    {
+        public JSchema Schema { get; set; }
+
+        public string SchemaName { get; set; }
+
+        public string ConsumerName { get; set; }
     }
 }
