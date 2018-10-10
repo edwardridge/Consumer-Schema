@@ -11,6 +11,6 @@
     <PackageTags>CDC, Consumer Driven Conracts, Contract Testing</PackageTags>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json.Schema" Version="2.0.7" />
+    <PackageReference Include="Newtonsoft.Json.Schema" Version="3.0.10" />
   </ItemGroup>
 </Project>
