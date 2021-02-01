@@ -134,6 +134,7 @@ namespace ConsumerSchema.Checker
         public JObject GenerateExample(Type type)
         {
             var fixture = new Fixture();
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
             var example = fixture.Create(type);
             var exampleAsJObect = JObject.FromObject(example);
